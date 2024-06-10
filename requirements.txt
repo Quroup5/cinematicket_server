@@ -1,0 +1,6 @@
+#pip install requirements.txt
+gunicorn==22.0.0
+parse==1.20.1
+SQLAlchemy==2.0.30
+typing_extensions==4.12.2
+WebOb==1.8.7
