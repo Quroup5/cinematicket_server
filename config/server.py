@@ -23,7 +23,6 @@ class API:
         def wrapper(handler):
             self.routes[path] = handler
             return handler
-
         return wrapper
 
     def find_handler(self, request_path):
