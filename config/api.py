@@ -1,8 +1,11 @@
-from config.server import API
-import user.views as uv
 from webob import Response
 
+from config.server import API
+from config.settings import engine, Base
+import user.views as uv
+
 api = API()
+Base.metadata.create_all(bind=engine)
 
 @api.route("/signup/user/")
 def signup_user(request):

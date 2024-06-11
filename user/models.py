@@ -1,5 +1,6 @@
-from config.settings import *
-
+import sqlalchemy as db
+from datetime import datetime, date
+from config.settings import Base
 
 class Human:
     def __init__(self, name):
@@ -12,12 +13,12 @@ class Admin(Base, Human):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(100), nullable=False, unique=True)
     password = db.Column(db.String(100), nullable=False)
-    cinema = relationship("cinema", back_populates="admin", uselist=False) 
+    # cinema = relationship("Cinema", back_populates="admin", uselist=False) 
 
     def __init__(self, name, password, Cinema=None):
         self.name = name
         self.password = password
-        self.cinema = Cinema
+        # self.cinema = Cinema
 
     def __str__(self):
         return f" id:{self.id}, name: {self.name}"
@@ -36,7 +37,7 @@ class User(Base, Human):
     birth_date = db.Column(db.DATE, nullable=False)
     creation_date = db.Column(db.DATE, nullable=False)
     wallet = db.Column(db.FLOAT, default=0)
-    tickets = relationship("Ticket", back_populates="user")
+    # tickets = relationship("Ticket", back_populates="user")
     # [ ]: write other columns: level
 
     def __init__(
