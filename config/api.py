@@ -11,7 +11,8 @@ Base.metadata.create_all(bind=engine)
 def signup_user(request):
     try:
         return uv.signup_user(request)
-    except:
+    except Exception as e:
+        print(e)
         response = Response(status=400)
         response.text = "BAD REQUEST!"
         return response

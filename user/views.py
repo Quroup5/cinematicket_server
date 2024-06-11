@@ -11,14 +11,12 @@ def signup_user(request):
         data["name"],
         data["password"],
         data["email"],
-        data["year"],
-        data["month"],
-        data["day"],
-        phone_number=data["phone_number"],
+        data["birth_date"],
+        data["phone_number"],
     )
     
     session = SessionLocal()
-    
+
     try:
         session.add(new_user)
         session.commit()
@@ -35,7 +33,11 @@ def login_admin(request):
     data = request.json
     session = SessionLocal()
     try:
-        results = session.query(Admin).filter(Admin.name == data["name"], Admin.password == data["password"]).first()
+        results = (
+            session.query(Admin)
+            .filter(Admin.name == data["name"], Admin.password == data["password"])
+            .first()
+        )
         results = (
             session.query(Admin)
             .filter(Admin.name == data["name"], Admin.password == data["password"])
@@ -44,7 +46,8 @@ def login_admin(request):
         if len(results) != 0:
             response.status_code = 200
             response.text = (
-                f'welcome {data["name"]}. Your profile info is: \n' + results[0].__str__()
+                f'welcome {data["name"]}. Your profile info is: \n'
+                + results[0].__str__()
             )
             return response
         else:
