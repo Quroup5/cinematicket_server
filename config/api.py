@@ -18,7 +18,7 @@ def login_admin(request):
     try:
         return uv.login_admin(request)
     except Exception as e:
-        print(type(e))
+        print(e)
         response = Response(status=400)
         response.text = "BAD REQUEST!"
         return response

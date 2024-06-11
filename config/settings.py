@@ -7,7 +7,7 @@ Base = declarative_base()
 
 engine = db.create_engine('sqlite:///database.db', echo=True)
 
-# Base.metadata.create_all(engine)
+Base.metadata.create_all(engine)
 
 Session = scoped_session(sessionmaker(bind=engine))
 session = Session()
