@@ -1,4 +1,8 @@
 from webob import Response
+
+import sys
+sys.path.append('.')
+
 from config.settings import SessionLocal
 
 from user.models import User, Admin
@@ -36,11 +40,6 @@ def login_admin(request):
         results = (
             session.query(Admin)
             .filter(Admin.name == data["name"], Admin.password == data["password"])
-            .first()
-        )
-        results = (
-            session.query(Admin)
-            .filter(Admin.name == data["name"], Admin.password == data["password"])
             .all()
         )
         if len(results) != 0:
@@ -56,3 +55,17 @@ def login_admin(request):
             return response
     finally:
         session.close()
+
+def generate_admin(num):
+    for idx in range(num):
+        admin = Admin(f"name{idx}", password='1234')
+        session = SessionLocal()
+        try:
+            session.add(admin)
+            session.commit()
+        finally:
+            session.close()
+
+
+if __name__ == "__main__":
+    generate_admin(10)

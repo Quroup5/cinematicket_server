@@ -1,5 +1,6 @@
 import sqlalchemy as db
-from datetime import datetime, date
+from sqlalchemy.orm import relationship
+from datetime import datetime
 from config.settings import Base
 
 
@@ -14,12 +15,11 @@ class Admin(Base, Human):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(100), nullable=False, unique=True)
     password = db.Column(db.String(100), nullable=False)
-    # cinema = relationship("Cinema", back_populates="admin", uselist=False)
+    # cinema = relationship("Cinema", back_populates="admin")
 
-    def __init__(self, name, password, Cinema=None):
+    def __init__(self, name, password):
         self.name = name
         self.password = password
-        # self.cinema = Cinema
 
     # [ ]: implement the create_sans()
 
@@ -31,8 +31,8 @@ class User(Base, Human):
     name = db.Column(db.String(100), nullable=False, unique=True)
     password = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), nullable=False)
-    phone_number = db.Column(db.String(100), nullable=True)
     birth_date = db.Column(db.DATE, nullable=False)
+    phone_number = db.Column(db.String(100), nullable=True)
     creation_date = db.Column(db.DATE, nullable=False)
     wallet = db.Column(db.FLOAT, default=0)
     # tickets = relationship("Ticket", back_populates="user")
