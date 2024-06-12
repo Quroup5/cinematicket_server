@@ -15,7 +15,8 @@ class Admin(Base, Human):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(100), nullable=False, unique=True)
     password = db.Column(db.String(100), nullable=False)
-    # cinema = relationship("Cinema", back_populates="admin")
+    
+    cinema = relationship("Cinema", back_populates="admin_id")
 
     def __init__(self, name, password):
         self.name = name

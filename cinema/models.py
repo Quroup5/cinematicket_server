@@ -10,8 +10,9 @@ class Cinema(Base):
     name = db.Column(db.String(100), nullable=False, unique=True)
     rate = db.Column(db.Integer, nullable=False, default=0)
     admin_id = db.Column(db.Integer, db.ForeignKey("admins.id"), unique=True)
-    # admin = relationship("Admin", back_populates="cinema")
-    # films = relationship("Film", secondary=cinema_film, back_populates="cinema")
+    
+    admin = relationship("Admin", back_populates="cinema")
+    films = relationship("Film", back_populates="cinema")
 
     def __init__(self, name, rate, admin_id=None): 
         self.name = name
@@ -28,8 +29,11 @@ class Film(Base):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(100), nullable=False, unique=True)
     rate = db.Column(db.Integer, nullable=False, default=0)
-    # cinema = relationship("Cinema", secondary=cinema_film, back_populates="films")
+    cinema_id = db.Column(db.Integer, db.ForeignKey("cinemas.id")) 
 
+    # Relationships
+    cinema = relationship("Cinema")
+    
     def __init__(self, name):
         self.name = name
 
