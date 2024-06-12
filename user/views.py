@@ -15,7 +15,7 @@ def signup_user(request):
         data["birth_date"],
         data["phone_number"],
     )
-    
+
     session = SessionLocal()
 
     try:
@@ -52,3 +52,22 @@ def login_admin(request):
             return response
     finally:
         session.close()
+
+
+def get_profile(request):
+    """
+    make a response with user data
+    """
+    pass
+
+
+def login_user(request):
+    pass
+
+
+def buy_ticket(request):
+    pass
+
+
+def add_cinema(request):
+    pass
