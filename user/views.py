@@ -6,6 +6,8 @@ sys.path.append('.')
 from config.settings import SessionLocal
 
 from user.models import User, Admin
+from config.settings import Base, engine
+Base.metadata.create_all(engine)
 
 
 def signup_user(request):
@@ -56,6 +58,8 @@ def login_admin(request):
     finally:
         session.close()
 
+
+#--------------------------------tests ------------------------
 def generate_admin(num):
     for idx in range(num):
         admin = Admin(f"name{idx}", password='1234')
@@ -65,6 +69,7 @@ def generate_admin(num):
             session.commit()
         finally:
             session.close()
+
 
 
 if __name__ == "__main__":
