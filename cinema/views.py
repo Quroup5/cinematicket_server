@@ -32,3 +32,14 @@ def add_film_to_cinema(request):
         data["rate"],
         data["cinema"],
     )
+    session = SessionLocal()
+
+    try:
+        session.add(new_film)
+        session.commit()
+        response.status_code = 201
+    except:
+        response.status_code = 405
+    finally:
+        session.close()
+    return response

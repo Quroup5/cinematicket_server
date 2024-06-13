@@ -3,6 +3,7 @@ from webob import Response
 from config.server import API
 from config.settings import engine, Base
 import user.views as uv
+import cinema.views as cv
 
 api = API()
 Base.metadata.create_all(bind=engine)
