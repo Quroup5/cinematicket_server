@@ -37,7 +37,7 @@ class Cinema(Base):
     name = db.Column(db.String(100), nullable=False, unique=True)
     rate = db.Column(db.Integer, nullable=False, default=0)
 
-    admin = relationship("Admin", back_populates="cinema")
+    admin = relationship("Admin", uselist=False, back_populates="cinema")
     films = relationship("Film", secondary=cinema_film, back_populates="cinema")
     showtime_list = relationship(
         "ShowTime", secondary=cinema_showtime, back_populates="cinema_list"
@@ -89,6 +89,8 @@ class Seat(Base):
     __tablename__ = "seats"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    
+    showtime_id = db.Column(db.Integer, db.ForeignKey("showtimes.id"), unique=True)
 
     # showtime = relationship("ShowTime", back_populates="seat_list")
     showtime = relationship("ShowTime")

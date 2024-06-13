@@ -19,7 +19,7 @@ class Admin(Base, Human):
     name = db.Column(db.String(100), nullable=False, unique=True)
     password = db.Column(db.String(100), nullable=False)
 
-    cinema = relationship("Cinema", back_populates="admin_id")
+    cinema = relationship("Cinema", back_populates="admin")
 
     def __init__(self, name, password):
         self.name = name
@@ -76,7 +76,8 @@ class BankAccount(Base):
     cvv2 = db.Column(db.String(100), nullable=False)
     deposit = db.Column(db.FLOAT, nullable=False, default=0.0)
 
-    user = relationship("User", back_populates="bank_account_list")
+    # user = relationship("User", back_populates="bank_account_list")
+    user = relationship("User")
 
     def __init__(self, bank_name, account_number, cvv2, password, user=None):
         self.bank_name = bank_name

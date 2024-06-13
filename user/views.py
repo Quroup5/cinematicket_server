@@ -1,8 +1,10 @@
 from webob import Response
+import json
 
 from config.settings import SessionLocal
 
 from user.models import User, Admin
+from cinema.models import Cinema, Film
 
 
 def signup_user(request):
@@ -31,34 +33,58 @@ def signup_user(request):
 
 def login_admin(request):
     response = Response()
-    data = request.json
+    data = request.json  # [ ]: Suppose get name and password
     session = SessionLocal()
     try:
-        results = (
+        result = (
             session.query(Admin)
             .filter(Admin.name == data["name"], Admin.password == data["password"])
-            .all()
+            .first()
         )
-        if len(results) != 0:
+        if not result:
             response.status_code = 200
-            response.text = (
-                f'welcome {data["name"]}. Your profile info is: \n'
-                + results[0].__str__()
-            )
+            response.content_type = "application/json"
+            serialized_object = json.dumps(result)
+            response.body = serialized_object
             return response
         else:
             response.status_code = 404
-            response.text = f'No such a username: {data["name"]}'
+            response.text = f'No such a admin: {data["name"]}'
             return response
+    except:
+        response.status_code = 405
+        return response
+
     finally:
         session.close()
 
 
 def get_profile(request):
-    """
-    make a response with user data
-    """
-    pass
+    response = Response()
+    data = request.json  # [ ]: Suppose get name and password
+    session = SessionLocal()
+    try:
+        result = (
+            session.query(User)
+            .filter(User.name == data["name"], User.password == data["password"])
+            .first()
+        )
+        if not result:
+            response.status_code = 200
+            response.content_type = "application/json"
+            serialized_object = json.dumps(result)
+            response.body = serialized_object
+            return response
+        else:
+            response.status_code = 404
+            response.text = f'No such a user: {data["name"]}'
+            return response
+    except:
+        response.status_code = 405
+        return response
+
+    finally:
+        session.close()
 
 
 def login_user(request):
@@ -70,4 +96,21 @@ def buy_ticket(request):
 
 
 def add_cinema(request):
-    pass
+    response = Response()
+    data = request.json
+    new_cinema = Cinema(
+        data["name"],
+        data["rate"],
+    )
+
+    session = SessionLocal()
+
+    try:
+        session.add(new_cinema)
+        session.commit()
+        response.status_code = 201
+    except:
+        response.status_code = 405
+    finally:
+        session.close()
+    return response
