@@ -53,7 +53,7 @@ class User(Base, Human):
     ):
         self.name = name
         self.password = bcrypt.hashpw(
-            password, bcrypt.gensalt()
+            f"{password}".encode('utf-8'), bcrypt.gensalt()
         )  # bcrypt.checkpw(password, hashed)
         self.email = email
         self.phone_number = phone_number
