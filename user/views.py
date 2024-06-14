@@ -39,7 +39,7 @@ def login_admin(request):
         result = (
             session.query(Admin)
             .filter(Admin.name == data["name"],
-                    bcrypt.checkpw(f"{data["password"]}".encode('utf-8'),
+                    bcrypt.checkpw("{}".format(data["password"]).encode('utf-8'),
                                    Admin.password)
                     )
             .first()
