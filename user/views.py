@@ -1,5 +1,5 @@
 from webob import Response
-import json
+import json, bcrypt
 
 from config.settings import SessionLocal
 
@@ -38,7 +38,10 @@ def login_admin(request):
     try:
         result = (
             session.query(Admin)
-            .filter(Admin.name == data["name"], Admin.password == data["password"])
+            .filter(Admin.name == data["name"],
+                    bcrypt.checkpw(f"{data["password"]}".encode('utf-8'),
+                                   Admin.password)
+                    )
             .first()
         )
 

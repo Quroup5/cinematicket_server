@@ -23,7 +23,9 @@ class Admin(Base, Human):
 
     def __init__(self, name, password):
         self.name = name
-        self.password = password
+        self.password = bcrypt.hashpw(
+            f"{password}".encode('utf-8'), bcrypt.gensalt()
+        )
 
 
 class User(Base, Human):
