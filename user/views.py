@@ -41,17 +41,16 @@ def login_admin(request):
             .filter(Admin.name == data["name"], Admin.password == data["password"])
             .first()
         )
-        if not result:
+
+        if result:
             response.status_code = 200
-            response.content_type = "application/json"
-            serialized_object = json.dumps(result)
-            response.body = serialized_object
             return response
         else:
             response.status_code = 404
             response.text = f'No such a admin: {data["name"]}'
             return response
-    except:
+    except Exception as e:
+        print(e)
         response.status_code = 405
         return response
 
