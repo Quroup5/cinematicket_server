@@ -46,12 +46,10 @@ class Cinema(Base):
     def __init__(
         self,
         name,
-        rate,
-        admin_id=None,
+        admin_id,
     ):
         self.admin_id = admin_id
         self.name = name
-        self.rate = rate
 
 
 class Film(Base):

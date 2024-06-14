@@ -72,6 +72,15 @@ def add_cinema(request):
         response.text = "BAD REQUEST!"
         return response
 
+@api.route("/admin/addfilm/")
+def add_film(request):
+    try:
+        return uv.add_film(request)
+    except Exception as e:
+        print(e)
+        response = Response(status=400)
+        response.text = "BAD REQUEST!"
+        return response
 
 @api.route("/user/buyticket/")
 def buy_ticket(request):

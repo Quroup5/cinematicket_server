@@ -154,7 +154,7 @@ def add_cinema(request):
     data = request.json
     new_cinema = Cinema(
         data["name"],
-        data["rate"],
+        data["admin_id"],
     )
 
     session = SessionLocal()
@@ -169,6 +169,45 @@ def add_cinema(request):
         session.close()
     return response
 
+def add_film(request):
+    response = Response()
+    data = request.json
+    new_film = Film(
+        data["film_name"],
+    )
+    
+    session = SessionLocal()
+    
+    try:
+        target_cinema = (
+            session.query(Cinema)
+            .filter(Cinema.name == data["cinema_name"])
+            .first()
+        )
+        new_film.cinema.append(target_cinema)
+        session.add(new_film)
+        session.commit()
+        response.status_code = 201
+    
+    except Exception as e:
+        print(e)
+        response.status_code = 405
+        return response
+
+    finally:
+        session.close()
+
+    session = SessionLocal()
+
+    try:
+        session.add(new_film)
+        session.commit()
+        response.status_code = 201
+    except:
+        response.status_code = 405
+    finally:
+        session.close()
+    return response
 
 def buy_ticket(request):
     response = Response()
