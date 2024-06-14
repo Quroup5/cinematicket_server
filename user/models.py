@@ -40,8 +40,8 @@ class User(Base, Human):
     creation_date = db.Column(db.DATE, nullable=False)
     wallet = db.Column(db.FLOAT, default=0)
 
-    # ticket_list = relationship("Ticket", back_populates="user")
-    # bank_account_list = relationship("BankAccount", back_populates="user")
+    ticket_list = relationship("Ticket", back_populates="user")
+    #bank_account_list = relationship("BankAccount", back_populates="user")
 
     def __init__(
         self,
@@ -52,9 +52,10 @@ class User(Base, Human):
         phone_number,
     ):
         self.name = name
-        self.password = bcrypt.hashpw(
-            password, bcrypt.gensalt()
-        )  # bcrypt.checkpw(password, hashed)
+        #self.password = bcrypt.hashpw(
+        #     password, bcrypt.gensalt()
+        # )  # bcrypt.checkpw(password, hashed)
+        self.password = password
         self.email = email
         self.phone_number = phone_number
         self.birth_date = datetime.strptime(birth_date, "%Y-%m-%d")
@@ -88,8 +89,14 @@ class BankAccount(Base):
 
         self.user = user
 
-    def increase_deposit(self):
-        pass
+    def increase_deposit(self, money):
+        self.deposit += money
 
-    def decrease_deposit(self):
-        pass
+    def decrease_deposit(self, money):
+        new_deposit = self.deposit - money
+
+        if new_deposit < 0:
+            print("Insufficient fund")
+
+        else:
+            self.deposit = new_deposit
