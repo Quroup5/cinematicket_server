@@ -90,14 +90,14 @@ class Seat(Base):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     
-    showtime_id = db.Column(db.Integer, db.ForeignKey("showtimes.id"), unique=True)
+    showtime_id = db.Column(db.Integer, db.ForeignKey("showtimes.id"))
 
     # showtime = relationship("ShowTime", back_populates="seat_list")
     showtime = relationship("ShowTime")
     ticket = relationship("Ticket", back_populates="seat")
 
-    def __init__(self, cinema=None):
-        self.showtime_list.append(cinema)
+    def __init__(self, showtime=None):
+        self.showtime = showtime
 
 
 class Ticket(Base):
@@ -105,7 +105,7 @@ class Ticket(Base):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     
-    users_id = db.Column(db.Integer, db.ForeignKey("users.id"), unique=True)
+    users_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     seat_id = db.Column(db.Integer, db.ForeignKey("seats.id"), unique=True)
     
     price = db.Column(db.FLOAT)
@@ -114,6 +114,6 @@ class Ticket(Base):
     user = relationship("User")
     seat = relationship("Seat", back_populates="ticket")
 
-    def __init__(self, user, seat):
+    def __init__(self, seat, user = None):
         self.user = user
         self.seat = seat
