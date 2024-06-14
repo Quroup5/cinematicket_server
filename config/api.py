@@ -52,6 +52,7 @@ def login_admin(request):
         response.text = "BAD REQUEST!"
         return response
 
+
 @api.route("/admin/signup/")
 def signup_admin(request):
     try:
@@ -61,6 +62,7 @@ def signup_admin(request):
         response = Response(status=400)
         response.text = "BAD REQUEST!"
         return response
+
 
 @api.route("/admin/addcinema/")
 def add_cinema(request):
@@ -72,6 +74,7 @@ def add_cinema(request):
         response.text = "BAD REQUEST!"
         return response
 
+
 @api.route("/admin/addfilm/")
 def add_film(request):
     try:
@@ -82,10 +85,33 @@ def add_film(request):
         response.text = "BAD REQUEST!"
         return response
 
+
+@api.route("/admin/addshowtime/")
+def add_showtime(request):
+    try:
+        return uv.add_showtime(request)
+    except Exception as e:
+        print(e)
+        response = Response(status=400)
+        response.text = "BAD REQUEST!"
+        return response
+
+
 @api.route("/user/buyticket/")
 def buy_ticket(request):
     try:
         return uv.buy_ticket(request)
+    except Exception as e:
+        print(e)
+        response = Response(status=400)
+        response.text = "BAD REQUEST!"
+        return response
+
+
+@api.route("/user/ticketshow/")
+def show_ticket(request):
+    try:
+        return uv.show_ticket(request)
     except Exception as e:
         print(e)
         response = Response(status=400)

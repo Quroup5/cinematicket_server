@@ -78,8 +78,8 @@ class ShowTime(Base):
     )
     # seat_list = relationship("Seat", secondary=seat_showtime, back_populates="showtime_list")
 
-    def __init__(self, time, cinema=None):
-        self.time = time
+    def __init__(self, time, cinema):
+        self.time = datetime.strptime(time, "%Y-%m-%d %H:%M")
         self.cinema_list.append(cinema)
 
 
