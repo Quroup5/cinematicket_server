@@ -1,7 +1,7 @@
 import sqlalchemy as db
 from sqlalchemy.orm import relationship
 from datetime import datetime
-import bcrypt
+import hashlib
 
 from config.settings import Base
 
@@ -23,9 +23,10 @@ class Admin(Base, Human):
 
     def __init__(self, name, password):
         self.name = name
-        self.password = bcrypt.hashpw(
-            f"{password}".encode('utf-8'), bcrypt.gensalt()
-        )
+
+        encoder = hashlib.new("SHA256")
+        encoder.update(bytes(password, "utf-8"))
+        self.password = encoder.hexdigest()
 
 
 class User(Base, Human):
@@ -43,7 +44,7 @@ class User(Base, Human):
     wallet = db.Column(db.FLOAT, default=0)
 
     ticket_list = relationship("Ticket", back_populates="user")
-    #bank_account_list = relationship("BankAccount", back_populates="user")
+    # bank_account_list = relationship("BankAccount", back_populates="user")
 
     def __init__(
         self,
@@ -54,9 +55,11 @@ class User(Base, Human):
         phone_number,
     ):
         self.name = name
-        self.password = bcrypt.hashpw(
-            f"{password}".encode('utf-8'), bcrypt.gensalt()
-        )  # bcrypt.checkpw(password, hashed)
+
+        encoder = hashlib.new("SHA256")
+        encoder.update(bytes(password, "utf-8"))
+        self.password = encoder.hexdigest()
+
         self.email = email
         self.phone_number = phone_number
         self.birth_date = datetime.strptime(birth_date, "%Y-%m-%d")
@@ -84,7 +87,11 @@ class BankAccount(Base):
     def __init__(self, bank_name, account_number, cvv2, password, user=None):
         self.bank_name = bank_name
         self.account_number = account_number
-        self.password = password
+
+        encoder = hashlib.new("SHA256")
+        encoder.update(bytes(password, "utf-8"))
+        self.password = encoder.hexdigest()
+
         self.cvv2 = cvv2
         self.deposit = 0.0
 

@@ -73,11 +73,4 @@ def add_cinema(request):
         response = Response(status=400)
         response.text = "BAD REQUEST!"
         return response
-
-
-
-
-
-#-----------------------
-
-
+    

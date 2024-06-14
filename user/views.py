@@ -1,5 +1,5 @@
 from webob import Response
-import json, bcrypt
+import json, hashlib
 
 from config.settings import SessionLocal
 
@@ -31,17 +31,109 @@ def signup_user(request):
     return response
 
 
-def login_admin(request):
+def login_user(request):
     response = Response()
-    data = request.json  # [ ]: Suppose get name and password
+    data = request.json
     session = SessionLocal()
     try:
+        encoder = hashlib.new("SHA256")
+        encoder.update(bytes(data["password"], "utf-8"))
+
+        result = (
+            session.query(User)
+            .filter(User.name == data["name"], User.password == encoder.hexdigest())
+            .first()
+        )
+
+        if result:
+            response.status_code = 200
+            return response
+        else:
+            response.status_code = 403
+            response.text = f'No such a user: {data["name"]}'
+            return response
+    except Exception as e:
+        print(e)
+        response.status_code = 405
+        return response
+
+    finally:
+        session.close()
+
+def get_profile(request):
+    response = Response()
+    data = request.json
+    session = SessionLocal()
+    try:
+        encoder = hashlib.new("SHA256")
+        encoder.update(bytes(data["password"], "utf-8"))
+        
+        result = (
+            session.query(User)
+            .filter(User.name == data["name"], User.password == encoder.hexdigest())
+            .first()
+        )
+        if result:
+            response.status_code = 200
+            response.content_type = "application/json"
+            response.json = {
+                                "name": result.name,
+                                "password": result.password,
+                                "email": result.email,
+                                "birth_date": result.birth_date.strftime("%Y-%m-%d"),
+                                "phone_number": result.phone_number,
+            }
+            return response
+        else:
+            response.status_code = 404
+            response.text = f'No such a user: {data["name"]}'
+            return response
+    except Exception as e:
+        print(e)
+        response.status_code = 405
+        return response
+
+    finally:
+        session.close()
+
+def buy_ticket(request):
+    response = Response()
+    data = request.json
+    session = SessionLocal()
+    pass
+
+def signup_admin(request):
+    response = Response()
+    data = request.json
+    new_admin = Admin(
+        data["name"],
+        data["password"],
+    )
+
+    session = SessionLocal()
+
+    try:
+        session.add(new_admin)
+        session.commit()
+        response.status_code = 201
+    except:
+        response.status_code = 405
+    finally:
+        session.close()
+    return response
+
+
+def login_admin(request):
+    response = Response()
+    data = request.json
+    session = SessionLocal()
+    try:
+        encoder = hashlib.new("SHA256")
+        encoder.update(bytes(data["password"], "utf-8"))
+
         result = (
             session.query(Admin)
-            .filter(Admin.name == data["name"],
-                    bcrypt.checkpw("{}".format(data["password"]).encode('utf-8'),
-                                   Admin.password)
-                    )
+            .filter(Admin.name == data["name"], Admin.password == encoder.hexdigest())
             .first()
         )
 
@@ -59,42 +151,6 @@ def login_admin(request):
 
     finally:
         session.close()
-
-
-def get_profile(request):
-    response = Response()
-    data = request.json  # [ ]: Suppose get name and password
-    session = SessionLocal()
-    try:
-        result = (
-            session.query(User)
-            .filter(User.name == data["name"], User.password == data["password"])
-            .first()
-        )
-        if result:
-            response.status_code = 200
-            response.content_type = "application/json"
-            serialized_object = json.dumps(result)
-            response.body = serialized_object
-            return response
-        else:
-            response.status_code = 404
-            response.text = f'No such a user: {data["name"]}'
-            return response
-    except:
-        response.status_code = 405
-        return response
-
-    finally:
-        session.close()
-
-
-def login_user(request):
-    pass
-
-
-def buy_ticket(request):
-    pass
 
 
 def add_cinema(request):
