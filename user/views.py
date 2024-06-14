@@ -46,7 +46,7 @@ def login_admin(request):
             response.status_code = 200
             return response
         else:
-            response.status_code = 404
+            response.status_code = 403
             response.text = f'No such a admin: {data["name"]}'
             return response
     except Exception as e:
@@ -68,7 +68,7 @@ def get_profile(request):
             .filter(User.name == data["name"], User.password == data["password"])
             .first()
         )
-        if not result:
+        if result:
             response.status_code = 200
             response.content_type = "application/json"
             serialized_object = json.dumps(result)
