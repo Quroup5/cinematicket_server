@@ -1,5 +1,5 @@
 from webob import Response
-import json, hashlib
+import hashlib, datetime
 
 from config.settings import SessionLocal
 
@@ -291,33 +291,48 @@ def buy_ticket(request):
         return response
 
 
-def show_ticket(request):
+def show_tickets(request):
     response = Response()
     data = request.json
     session = SessionLocal()
-    pass
+    try:
+        target_cinema = (
+            session.query(Cinema).filter(Cinema.name == data["cinema_name"]).first()
+        )
+        target_films = target_cinema.films
+        list_film_names = list(map(lambda x: x.name, target_films))
 
+        if data["film_name"] not in list_film_names:
+            response.status_code = 404
+            response.text = f'No such a film: {data["film_name"]}'
+            return response
 
-# def show_tickets(user_id, cinema_name, film_name, time):
-#     session = SessionLocal()
-#     cinema = session.query(Cinema).filter(Cinema.name == cinema_name).first()
-#     showtime = session.query(ShowTime).filter(ShowTime.time == time).first()
-#     seat_list = session.query(Seat).filter(Seat.showtime_id == showtime.id).all()
-#     list_film_names = list(map(lambda x: x.name, cinema.films))
+        user = session.query(User).filter(User.id == data["user_id"]).first()
+        ticket = session.query(Ticket).filter(Ticket.seat_id == data["seat_id"]).first()
+        showtime = (
+            session.query(ShowTime)
+            .filter(ShowTime.time == datetime.strptime(data["time"], "%Y-%m-%d %H:%M"))
+            .first()
+        )
+        seat_list = session.query(Seat).filter(Seat.showtime_id == showtime.id).all()
 
-#     if film_name not in list_film_names:
-#         return "This film doesnt exist in cinema"
+        tickets = dict()
 
-#     for number, seat in enumerate(seat_list):
-#         if number % 5 == 0:
-#             print()
+        for seat in seat_list:
+            ticket = session.query(Ticket).filter(Ticket.seat_id == seat.id).first()
+            ticket[ticket.id] = {
+                "users_id": ticket.users_id,
+                "seat_id": ticket.seat_id,
+                "price": ticket.price,
+            }
 
-#         ticket = session.query(Ticket).filter(Ticket.seat_id == seat.id).first()
-#         # print(ticket, seat, number)
-#         if not ticket.users_id:
-#             char = number + 1
-#         else:
-#             char = "*"
-#         print(char, end=" ")
+        response.status_code = 200
+        response.json = tickets
 
-#     return "OK"
+        session.close()
+        return response
+
+    except Exception as e:
+        print(e)
+        response.status_code = 405
+        return response

@@ -11,7 +11,6 @@ cinema_film = db.Table(
     db.Column("id_film", db.Integer, db.ForeignKey("films.id")),
 )
 
-
 cinema_showtime = db.Table(
     "cinema_showtime",
     Base.metadata,
@@ -87,7 +86,7 @@ class Seat(Base):
     __tablename__ = "seats"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    
+
     showtime_id = db.Column(db.Integer, db.ForeignKey("showtimes.id"))
 
     # showtime = relationship("ShowTime", back_populates="seat_list")
@@ -102,16 +101,16 @@ class Ticket(Base):
     __tablename__ = "tickets"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    
+
     users_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     seat_id = db.Column(db.Integer, db.ForeignKey("seats.id"), unique=True)
-    
+
     price = db.Column(db.FLOAT)
-    
+
     # user = relationship("User", back_populates="ticket_list")
     user = relationship("User")
     seat = relationship("Seat", back_populates="ticket")
 
-    def __init__(self, seat, user = None):
+    def __init__(self, seat, user=None):
         self.user = user
         self.seat = seat
