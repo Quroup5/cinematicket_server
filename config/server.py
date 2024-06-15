@@ -5,7 +5,7 @@ from parse import parse
 class API:
     def __init__(self):
         self.routes = {}
-        self.default_reponse = Response(status=404, text="Not Found")
+        self.default_reponse = Response(status=404, text="Page Not Found")
 
     def __call__(self, environ, start_response):
         request = Request(environ)
@@ -23,7 +23,6 @@ class API:
         def wrapper(handler):
             self.routes[path] = handler
             return handler
-
         return wrapper
 
     def find_handler(self, request_path):
